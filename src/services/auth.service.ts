@@ -12,4 +12,14 @@ export class AuthService {
       },
     });
   }
+
+  async login(email: string, password: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error('Invalid credentials');
+    
+    const valid = await argon2.verify(user.password, password);
+    if (!valid) throw new Error('Invalid credentials');
+    
+    return user;
+  }
 }
