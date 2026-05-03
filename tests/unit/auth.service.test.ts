@@ -55,3 +55,18 @@ describe("AuthService", () => {
     expect(result).toEqual(mockUser);
   });
 });
+
+  it('should throw error for invalid credentials (wrong password)', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({ id: 'u1', password: 'hashedpassword' } as any);
+    vi.mocked(argon2.verify).mockResolvedValue(false);
+
+    const service = new AuthService();
+    await expect(service.login('test@test.com', 'wrongpassword')).rejects.toThrow('Invalid credentials');
+  });
+
+  it('should throw error if user not found', async () => {
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(null);
+
+    const service = new AuthService();
+    await expect(service.login('nonexistent@test.com', 'password123')).rejects.toThrow('Invalid credentials');
+  });

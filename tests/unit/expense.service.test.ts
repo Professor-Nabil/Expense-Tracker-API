@@ -68,3 +68,10 @@ describe('ExpenseService', () => {
       where: { id: 'exp-1', userId: 'user-1' }
     });
   });
+
+  it('should throw error if expense not found during removal', async () => {
+    vi.mocked(prisma.expense.delete).mockRejectedValue(new Error('Record to delete does not exist.'));
+
+    const service = new ExpenseService();
+    await expect(service.remove('nonexistent', 'user-1')).rejects.toThrow();
+  });
