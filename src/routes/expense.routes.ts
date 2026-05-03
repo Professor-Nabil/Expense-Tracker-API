@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.post('/', expenseController.create);
 router.get('/', expenseController.list);
+router.put('/:id', expenseController.update);
 router.delete('/:id', expenseController.remove);
 
 export default router;

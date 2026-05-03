@@ -27,6 +27,21 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const update = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = (req as any).user.id;
+    const { id } = req.params;
+    if (typeof id !== 'string') {
+        throw new Error('Invalid expense ID');
+    }
+    const data = ExpenseSchema.parse(req.body);
+    const updated = await expenseService.update(id, userId, data);
+    res.status(200).json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.id;

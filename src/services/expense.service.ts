@@ -20,6 +20,16 @@ export class ExpenseService {
     });
   }
 
+  async update(id: string, userId: string, data: { title: string; amount: number; category: 'Groceries' | 'Leisure' | 'Electronics' | 'Utilities' | 'Clothing' | 'Health' | 'Others'; date: string }) {
+    return await prisma.expense.update({
+      where: { id, userId },
+      data: {
+        ...data,
+        date: new Date(data.date),
+      },
+    });
+  }
+
   async remove(id: string, userId: string) {
     return await prisma.expense.delete({
       where: { id, userId },
