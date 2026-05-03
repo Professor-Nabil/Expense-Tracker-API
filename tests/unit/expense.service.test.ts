@@ -7,6 +7,7 @@ vi.mock('../../src/lib/prisma', () => ({
     expense: {
       create: vi.fn(),
       findMany: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
@@ -54,4 +55,16 @@ describe('ExpenseService', () => {
       take: 10,
       skip: 0
     }));
+  });
+
+  it('should remove an expense', async () => {
+    vi.mocked(prisma.expense.delete).mockResolvedValue({ id: 'exp-1' } as any);
+
+    const service = new ExpenseService();
+    const result = await service.remove('exp-1', 'user-1');
+
+    expect(result.id).toBe('exp-1');
+    expect(prisma.expense.delete).toHaveBeenCalledWith({
+      where: { id: 'exp-1', userId: 'user-1' }
+    });
   });

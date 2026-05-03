@@ -19,4 +19,10 @@ export class ExpenseService {
       orderBy: { date: 'desc' },
     });
   }
+
+  async remove(id: string, userId: string) {
+    return await prisma.expense.delete({
+      where: { id, userId },
+    });
+  }
 }
