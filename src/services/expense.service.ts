@@ -10,4 +10,13 @@ export class ExpenseService {
       },
     });
   }
+
+  async list(userId: string, options: { limit: number; offset: number }) {
+    return await prisma.expense.findMany({
+      where: { userId },
+      take: options.limit,
+      skip: options.offset,
+      orderBy: { date: 'desc' },
+    });
+  }
 }

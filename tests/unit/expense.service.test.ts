@@ -6,6 +6,7 @@ vi.mock('../../src/lib/prisma', () => ({
   prisma: {
     expense: {
       create: vi.fn(),
+      findMany: vi.fn(),
     },
   },
 }));
@@ -39,3 +40,18 @@ describe('ExpenseService', () => {
     expect(result).toEqual(mockExpense);
   });
 });
+
+  it('should list expenses with filters', async () => {
+    const mockExpenses = [{ id: 'exp-1', title: 'Lunch' }];
+    vi.mocked(prisma.expense.findMany).mockResolvedValue(mockExpenses as any);
+
+    const service = new ExpenseService();
+    const result = await service.list('user-1', { limit: 10, offset: 0 });
+
+    expect(result).toEqual(mockExpenses);
+    expect(prisma.expense.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { userId: 'user-1' },
+      take: 10,
+      skip: 0
+    }));
+  });
