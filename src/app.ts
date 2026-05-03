@@ -7,7 +7,7 @@ import { pinoHttp } from 'pino-http';
 export const app = express();
 
 app.use(express.json());
-app.use(pinoHttp());
+app.use(pinoHttp(process.env.NODE_ENV === 'test' ? { level: 'silent' } : {}));
 app.use('/auth', authRoutes);
 app.use('/expenses', expenseRoutes);
 app.use(errorMiddleware);
